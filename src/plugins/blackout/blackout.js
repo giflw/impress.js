@@ -14,6 +14,8 @@
 
     var canvas = null;
     var blackedOut = false;
+    var util = null;
+    var root = null;
 
     // While waiting for a shared library of utilities, copying these 2 from main impress.js
     var css = function( el, props ) {
@@ -56,42 +58,44 @@
 
     } )();
 
-    var removeBlackout = function() {
+    var removeBlackout = function(util, root) {
         if ( blackedOut ) {
             css( canvas, {
                 display: "block"
             } );
             blackedOut = false;
+            util.triggerEvent(root, 'impress:autoplay:resume', {})
         }
     };
 
-    var blackout = function() {
+    var blackout = function(util, root) {
         if ( blackedOut ) {
-            removeBlackout();
+            removeBlackout(util, root);
         } else {
             css( canvas, {
                 display: ( blackedOut = !blackedOut ) ? "none" : "block"
             } );
             blackedOut = true;
+            util.triggerEvent(root, 'impress:autoplay:pause', {})
         }
     };
 
     // Wait for impress.js to be initialized
     document.addEventListener( "impress:init", function( event ) {
         var api = event.detail.api;
-        var root = event.target;
+        util = api.lib.util;
+        root = event.target;
         canvas = root.firstElementChild;
         var gc = api.lib.gc;
-        var util = api.lib.util;
 
         gc.addEventListener( document, "keydown", function( event ) {
             // b or . -> . is sent by presentation remote controllers
             if ( event.keyCode === 66 || event.keyCode === 190) {
                 event.preventDefault();
                 if ( !blackedOut ) {
-                    blackout();
+                    blackout(util, root);
                 } else {
-                    removeBlackout();
+                    removeBlackout(util, root);
                 }
             }
         }, false );
@@ -110,7 +114,7 @@
     }, false );
 
     document.addEventListener( "impress:stepleave", function() {
-        removeBlackout();
+        removeBlackout(util, root);
     }, false );
 
 } )( document );
