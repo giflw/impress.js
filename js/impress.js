@@ -1416,7 +1416,7 @@
 /**
  * Blackout plugin
  *
- * Press Ctrl+b to hide all slides, and Ctrl+b again to show them.
+ * Press b or . to hide all slides, and b or . again to show them.
  * Also navigating to a different slide will show them again (impress:stepleave).
  *
  * Copyright 2014 @Strikeskids
@@ -1497,9 +1497,11 @@
         var root = event.target;
         canvas = root.firstElementChild;
         var gc = api.lib.gc;
+        var util = api.lib.util;
 
         gc.addEventListener( document, "keydown", function( event ) {
-            if ( event.keyCode === 66 ) {
+            // b or . -> . is sent by presentation remote controllers
+            if ( event.keyCode === 66 || event.keyCode === 190) {
                 event.preventDefault();
                 if ( !blackedOut ) {
                     blackout();
@@ -1510,10 +1512,15 @@
         }, false );
 
         gc.addEventListener( document, "keyup", function( event ) {
-            if ( event.keyCode === 66 ) {
+            // b or . -> . is sent by presentation remote controllers
+            if ( event.keyCode === 66 || event.keyCode === 190) {
                 event.preventDefault();
             }
         }, false );
+
+        util.triggerEvent( document, "impress:help:add",
+            { command: "b or .", text: "Blackout", row: 100 } 
+        );
 
     }, false );
 
@@ -1649,6 +1656,82 @@
 
     document.addEventListener( "impress:stepleave", function() {
         document.activeElement.blur();
+    }, false );
+
+} )( document );
+
+
+/**
+ * Fullscreen plugin
+ *
+ * Press Ctrl+b to hide all slides, and Ctrl+b again to show them.
+ * Also navigating to a different slide will show them again (impress:stepleave).
+ *
+ * Copyright 2014 @Strikeskids
+ * Released under the MIT license.
+ */
+/* global document */
+
+( function( document ) {
+    "use strict";
+
+    function enterFullscreen() {
+        var elem = document.documentElement;
+        if (!document.fullscreenElement && !document.mozFullScreenElement &&
+            !document.webkitFullscreenElement && !document.msFullscreenElement) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        }
+    }
+
+    function exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+    // Wait for impress.js to be initialized
+    document.addEventListener( "impress:init", function( event ) {
+        var api = event.detail.api;
+        var root = event.target;
+        var gc = api.lib.gc;
+        var util = api.lib.util;
+
+        util.triggerEvent( document, "impress:help:add",
+            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 } 
+        );
+
+        gc.addEventListener( document, "keydown", function( event ) {
+            // 116 (F5) is sent by presentation remote controllers
+            if (event.code === "F5") {
+                event.preventDefault();
+                enterFullscreen();
+                util.triggerEvent( step, "impress:steprefresh" );
+            }
+        }, false );
+
+        gc.addEventListener( document, "keydown", function( event ) {
+            // 27 (Escape) is sent by presentation remote controllers
+            if (event.keyCode === 27) {
+                event.preventDefault();
+                exitFullscreen();
+                util.triggerEvent( step, "impress:steprefresh" );
+            }
+        }, false );
+
     }, false );
 
 } )( document );
@@ -1893,7 +1976,7 @@
 
     document.addEventListener( "keyup", function( event ) {
 
-        if ( event.keyCode === 72 ) { // "h"
+        if ( event.keyCode === 72 || event.keyCode === 191 ) { // "h" || "?"
             event.preventDefault();
             toggleHelp();
         }
@@ -3203,7 +3286,6 @@
                 if ( event.shiftKey ) {
                     switch ( event.keyCode ) {
                         case 9: // Shift+tab
-                        case 32: // Shift+space
                             api.prev();
                             break;
                     }
