@@ -1,7 +1,7 @@
 /**
  * Blackout plugin
  *
- * Press Ctrl+b to hide all slides, and Ctrl+b again to show them.
+ * Press b or . to hide all slides, and b or . again to show them.
  * Also navigating to a different slide will show them again (impress:stepleave).
  *
  * Copyright 2014 @Strikeskids
@@ -82,9 +82,11 @@
         var root = event.target;
         canvas = root.firstElementChild;
         var gc = api.lib.gc;
+        var util = api.lib.util;
 
         gc.addEventListener( document, "keydown", function( event ) {
-            if ( event.keyCode === 66 ) {
+            // b or . -> . is sent by presentation remote controllers
+            if ( event.keyCode === 66 || event.keyCode === 190) {
                 event.preventDefault();
                 if ( !blackedOut ) {
                     blackout();
@@ -95,10 +97,15 @@
         }, false );
 
         gc.addEventListener( document, "keyup", function( event ) {
-            if ( event.keyCode === 66 ) {
+            // b or . -> . is sent by presentation remote controllers
+            if ( event.keyCode === 66 || event.keyCode === 190) {
                 event.preventDefault();
             }
         }, false );
+
+        util.triggerEvent( document, "impress:help:add",
+            { command: "b or .", text: "Blackout", row: 100 } 
+        );
 
     }, false );
 
