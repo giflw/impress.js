@@ -51,13 +51,13 @@
 
     document.addEventListener( "impress:autoplay:pause", function( event ) {
         status = "paused";
-        reloadTimeout(event);
-    }, false);
+        reloadTimeout( event );
+    }, false );
 
     document.addEventListener( "impress:autoplay:resume", function( event ) {
         status = "playing";
-        reloadTimeout(event);
-    }, false);
+        reloadTimeout( event );
+    }, false );
 
     // If default autoplay time was defined in the presentation root, or
     // in this step, set timeout.

@@ -1,10 +1,9 @@
 /**
  * Fullscreen plugin
  *
- * Press Ctrl+b to hide all slides, and Ctrl+b again to show them.
- * Also navigating to a different slide will show them again (impress:stepleave).
+ * Press F5 to enter fullscreen and ESC to exit fullscreen mode.
  *
- * Copyright 2014 @Strikeskids
+ * Copyright 2019 @giflw
  * Released under the MIT license.
  */
 /* global document */
@@ -14,28 +13,28 @@
 
     function enterFullscreen() {
         var elem = document.documentElement;
-        if (!document.fullscreenElement && !document.mozFullScreenElement &&
-            !document.webkitFullscreenElement && !document.msFullscreenElement) {
-            if (elem.requestFullscreen) {
+        if ( !document.fullscreenElement && !document.mozFullScreenElement &&
+             !document.webkitFullscreenElement && !document.msFullscreenElement ) {
+            if ( elem.requestFullscreen ) {
                 elem.requestFullscreen();
-            } else if (elem.msRequestFullscreen) {
+            } else if ( elem.msRequestFullscreen ) {
                 elem.msRequestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
+            } else if ( elem.mozRequestFullScreen ) {
                 elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            } else if ( elem.webkitRequestFullscreen ) {
+                elem.webkitRequestFullscreen( Element.ALLOW_KEYBOARD_INPUT );
             }
         }
     }
 
     function exitFullscreen() {
-        if (document.exitFullscreen) {
+        if ( document.exitFullscreen ) {
             document.exitFullscreen();
-        } else if (document.msExitFullscreen) {
+        } else if ( document.msExitFullscreen ) {
             document.msExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
+        } else if ( document.mozCancelFullScreen ) {
             document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
+        } else if ( document.webkitExitFullscreen ) {
             document.webkitExitFullscreen();
         }
     }
@@ -48,24 +47,26 @@
         var util = api.lib.util;
 
         util.triggerEvent( document, "impress:help:add",
-            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 } 
+            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 }
         );
 
         gc.addEventListener( document, "keydown", function( event ) {
+
             // 116 (F5) is sent by presentation remote controllers
-            if (event.code === "F5") {
+            if ( event.code === "F5" ) {
                 event.preventDefault();
                 enterFullscreen();
-                util.triggerEvent( step, "impress:steprefresh" );
+                util.triggerEvent( root.querySelector( ".active" ), "impress:steprefresh" );
             }
         }, false );
 
         gc.addEventListener( document, "keydown", function( event ) {
+
             // 27 (Escape) is sent by presentation remote controllers
-            if (event.keyCode === 27) {
+            if ( event.keyCode === 27 ) {
                 event.preventDefault();
                 exitFullscreen();
-                util.triggerEvent( step, "impress:steprefresh" );
+                util.triggerEvent( root.querySelector( ".active" ), "impress:steprefresh" );
             }
         }, false );
 

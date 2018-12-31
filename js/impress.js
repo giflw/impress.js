@@ -1434,6 +1434,7 @@
     var blackedOut = false;
     var util = null;
     var root = null;
+    var api = null;
 
     // While waiting for a shared library of utilities, copying these 2 from main impress.js
     var css = function( el, props ) {
@@ -1482,7 +1483,7 @@
                 display: "block"
             } );
             blackedOut = false;
-            util.triggerEvent(root, 'impress:autoplay:resume', {})
+            util.triggerEvent(root, "impress:autoplay:resume", {});
             api.prev();
             setTimeout( function() {api.next();}, 1);
         }
@@ -1496,13 +1497,13 @@
                 display: ( blackedOut = !blackedOut ) ? "none" : "block"
             } );
             blackedOut = true;
-            util.triggerEvent(root, 'impress:autoplay:pause', {})
+            util.triggerEvent(root, "impress:autoplay:pause", {});
         }
     };
 
     // Wait for impress.js to be initialized
     document.addEventListener( "impress:init", function( event ) {
-        var api = event.detail.api;
+        api = event.detail.api;
         util = api.lib.util;
         root = event.target;
         canvas = root.firstElementChild;
@@ -1728,7 +1729,7 @@
             if (event.code === "F5") {
                 event.preventDefault();
                 enterFullscreen();
-                util.triggerEvent( step, "impress:steprefresh" );
+                util.triggerEvent(root.querySelector(".active"), "impress:steprefresh" );
             }
         }, false );
 
@@ -1737,7 +1738,7 @@
             if (event.keyCode === 27) {
                 event.preventDefault();
                 exitFullscreen();
-                util.triggerEvent( step, "impress:steprefresh" );
+                util.triggerEvent(root.querySelector(".active"), "impress:steprefresh" );
             }
         }, false );
 
