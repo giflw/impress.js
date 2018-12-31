@@ -58,19 +58,21 @@
 
     } )();
 
-    var removeBlackout = function(util, root) {
+    var removeBlackout = function(util, root, api) {
         if ( blackedOut ) {
             css( canvas, {
                 display: "block"
             } );
             blackedOut = false;
             util.triggerEvent(root, 'impress:autoplay:resume', {})
+            api.prev();
+            setTimeout( function() {api.next();}, 1);
         }
     };
 
     var blackout = function(util, root) {
         if ( blackedOut ) {
-            removeBlackout(util, root);
+            removeBlackout(util, root, api);
         } else {
             css( canvas, {
                 display: ( blackedOut = !blackedOut ) ? "none" : "block"
@@ -95,7 +97,7 @@
                 if ( !blackedOut ) {
                     blackout(util, root);
                 } else {
-                    removeBlackout(util, root);
+                    removeBlackout(util, root, api);
                 }
             }
         }, false );
@@ -114,7 +116,7 @@
     }, false );
 
     document.addEventListener( "impress:stepleave", function() {
-        removeBlackout(util, root);
+        removeBlackout(util, root, api);
     }, false );
 
 } )( document );
