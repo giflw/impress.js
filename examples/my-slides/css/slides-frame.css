@@ -1,0 +1,103 @@
+/*
+    These 'slide' step styles were heavily inspired by HTML5 Slides:
+    http://html5slides.googlecode.com/svn/trunk/styles.css
+    
+    Note that we also use a background image, again just to facilitate a common
+    feature from PowerPoint and LibreOffice worlds. In this case the background
+    image is just the impress.js favicon - as if it were a company logo or something.
+    
+*/
+.slide {
+    display: block;
+
+    width: 900px;
+    height: 700px;
+    padding: 40px 60px;
+
+    background-image: url(../images/background.png);
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 30px;
+    letter-spacing: -1px;
+}
+
+
+.slide h1, 
+.slide h2, 
+.slide h3 {
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    text-align: center;
+}
+
+.slide p {
+    text-align: center;
+    margin: 0.7em;
+}
+
+.slide li {
+    margin: 0.2em;    
+}
+
+/* Highlight.js used for coloring pre > code blocks. */
+.slide pre > code {
+    font-size: 14px;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+
+
+.slide .right {
+    float: right;
+    margin-left:   40px;
+    margin-right:   0px;
+    margin-top:    20px;
+    margin-bottom: 20px;
+}
+.slide .left {
+    float: left;
+    margin-right:  40px;
+    margin-left:    0px;
+    margin-top:    20px;
+    margin-bottom: 20px;
+}
+.slide .top {
+    position: absolute;
+    top: 20px;
+    margin-bottom:  20px;
+    margin-top:      0px;    
+}
+.slide .bottom {
+    position: absolute;
+    bottom: 20px;
+    margin-bottom:   0px;
+    margin-top:     20px;    
+}
+
+/* 
+    Specific styles for: .title slides 
+*/
+
+.slide.title {
+    background-image: url(../images/background-title.png);    
+}
+
+.slide.title h1,
+.slide.title h2,
+.slide.title h3 {
+    position: absolute;
+    left: 45px; /* slide width is 900px, so this is like a 5% margin on both sides */
+    width: 90%;
+    text-align: center;    
+}
+.slide.title h1 { top: 50px; }
+.slide.title h2 { top: 400px; }
+.slide.title h2 { top: 400px; }
+.slide.title h3 { top: 500px; }
+
