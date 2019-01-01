@@ -1306,13 +1306,13 @@
 
     document.addEventListener( "impress:autoplay:pause", function( event ) {
         status = "paused";
-        reloadTimeout(event);
-    }, false);
+        reloadTimeout( event );
+    }, false );
 
     document.addEventListener( "impress:autoplay:resume", function( event ) {
         status = "playing";
-        reloadTimeout(event);
-    }, false);
+        reloadTimeout( event );
+    }, false );
 
     // If default autoplay time was defined in the presentation root, or
     // in this step, set timeout.
@@ -1477,27 +1477,25 @@
 
     } )();
 
-    var removeBlackout = function(util, root, api) {
+    var removeBlackout = function() {
         if ( blackedOut ) {
             css( canvas, {
                 display: "block"
             } );
             blackedOut = false;
-            util.triggerEvent(root, "impress:autoplay:resume", {});
-            api.prev();
-            setTimeout( function() {api.next();}, 1);
+            util.triggerEvent( root, "impress:autoplay:resume", {} );
         }
     };
 
-    var blackout = function(util, root) {
+    var blackout = function() {
         if ( blackedOut ) {
-            removeBlackout(util, root, api);
+            removeBlackout();
         } else {
             css( canvas, {
                 display: ( blackedOut = !blackedOut ) ? "none" : "block"
             } );
             blackedOut = true;
-            util.triggerEvent(root, "impress:autoplay:pause", {});
+            util.triggerEvent( root, "impress:autoplay:pause", {} );
         }
     };
 
@@ -1510,32 +1508,34 @@
         var gc = api.lib.gc;
 
         gc.addEventListener( document, "keydown", function( event ) {
-            // b or . -> . is sent by presentation remote controllers
-            if ( event.keyCode === 66 || event.keyCode === 190) {
+
+            // Accept b or . -> . is sent by presentation remote controllers
+            if ( event.keyCode === 66 || event.keyCode === 190 ) {
                 event.preventDefault();
                 if ( !blackedOut ) {
-                    blackout(util, root);
+                    blackout();
                 } else {
-                    removeBlackout(util, root, api);
+                    removeBlackout();
                 }
             }
         }, false );
 
         gc.addEventListener( document, "keyup", function( event ) {
-            // b or . -> . is sent by presentation remote controllers
-            if ( event.keyCode === 66 || event.keyCode === 190) {
+
+            // Accept b or . -> . is sent by presentation remote controllers
+            if ( event.keyCode === 66 || event.keyCode === 190 ) {
                 event.preventDefault();
             }
         }, false );
 
         util.triggerEvent( document, "impress:help:add",
-            { command: "b or .", text: "Blackout", row: 100 } 
+            { command: "b or .", text: "Blackout", row: 100 }
         );
 
     }, false );
 
     document.addEventListener( "impress:stepleave", function() {
-        removeBlackout(util, root, api);
+        removeBlackout();
     }, false );
 
 } )( document );
@@ -1674,10 +1674,9 @@
 /**
  * Fullscreen plugin
  *
- * Press Ctrl+b to hide all slides, and Ctrl+b again to show them.
- * Also navigating to a different slide will show them again (impress:stepleave).
+ * Press F5 to enter fullscreen and ESC to exit fullscreen mode.
  *
- * Copyright 2014 @Strikeskids
+ * Copyright 2019 @giflw
  * Released under the MIT license.
  */
 /* global document */
@@ -1687,28 +1686,28 @@
 
     function enterFullscreen() {
         var elem = document.documentElement;
-        if (!document.fullscreenElement && !document.mozFullScreenElement &&
-            !document.webkitFullscreenElement && !document.msFullscreenElement) {
-            if (elem.requestFullscreen) {
+        if ( !document.fullscreenElement && !document.mozFullScreenElement &&
+             !document.webkitFullscreenElement && !document.msFullscreenElement ) {
+            if ( elem.requestFullscreen ) {
                 elem.requestFullscreen();
-            } else if (elem.msRequestFullscreen) {
+            } else if ( elem.msRequestFullscreen ) {
                 elem.msRequestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
+            } else if ( elem.mozRequestFullScreen ) {
                 elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            } else if ( elem.webkitRequestFullscreen ) {
+                elem.webkitRequestFullscreen( Element.ALLOW_KEYBOARD_INPUT );
             }
         }
     }
 
     function exitFullscreen() {
-        if (document.exitFullscreen) {
+        if ( document.exitFullscreen ) {
             document.exitFullscreen();
-        } else if (document.msExitFullscreen) {
+        } else if ( document.msExitFullscreen ) {
             document.msExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
+        } else if ( document.mozCancelFullScreen ) {
             document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
+        } else if ( document.webkitExitFullscreen ) {
             document.webkitExitFullscreen();
         }
     }
@@ -1721,24 +1720,26 @@
         var util = api.lib.util;
 
         util.triggerEvent( document, "impress:help:add",
-            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 } 
+            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 }
         );
 
         gc.addEventListener( document, "keydown", function( event ) {
+
             // 116 (F5) is sent by presentation remote controllers
-            if (event.code === "F5") {
+            if ( event.code === "F5" ) {
                 event.preventDefault();
                 enterFullscreen();
-                util.triggerEvent(root.querySelector(".active"), "impress:steprefresh" );
+                util.triggerEvent( root.querySelector( ".active" ), "impress:steprefresh" );
             }
         }, false );
 
         gc.addEventListener( document, "keydown", function( event ) {
+
             // 27 (Escape) is sent by presentation remote controllers
-            if (event.keyCode === 27) {
+            if ( event.keyCode === 27 ) {
                 event.preventDefault();
                 exitFullscreen();
-                util.triggerEvent(root.querySelector(".active"), "impress:steprefresh" );
+                util.triggerEvent( root.querySelector( ".active" ), "impress:steprefresh" );
             }
         }, false );
 

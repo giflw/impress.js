@@ -59,21 +59,19 @@
 
     } )();
 
-    var removeBlackout = function( util, root, api ) {
+    var removeBlackout = function() {
         if ( blackedOut ) {
             css( canvas, {
                 display: "block"
             } );
             blackedOut = false;
             util.triggerEvent( root, "impress:autoplay:resume", {} );
-            api.prev();
-            setTimeout( function() { api.next(); }, 1 );
         }
     };
 
-    var blackout = function( util, root ) {
+    var blackout = function() {
         if ( blackedOut ) {
-            removeBlackout( util, root, api );
+            removeBlackout();
         } else {
             css( canvas, {
                 display: ( blackedOut = !blackedOut ) ? "none" : "block"
@@ -97,9 +95,9 @@
             if ( event.keyCode === 66 || event.keyCode === 190 ) {
                 event.preventDefault();
                 if ( !blackedOut ) {
-                    blackout( util, root );
+                    blackout();
                 } else {
-                    removeBlackout( util, root, api );
+                    removeBlackout();
                 }
             }
         }, false );
@@ -119,7 +117,7 @@
     }, false );
 
     document.addEventListener( "impress:stepleave", function() {
-        removeBlackout( util, root, api );
+        removeBlackout();
     }, false );
 
 } )( document );
