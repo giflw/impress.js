@@ -23,16 +23,16 @@
     </div>
     <!-- SLIDES FROM HERE -->
     <div id="impress" data-transition-duration="1000" data-autoplay="0" data-width="1920" data-height="1080">
-        <div id="title" class="step title" data-x="0" data-y="0">
+        <header id="title" class="step title" data-x="0" data-y="0">
             <h1>Lorem ipsum dolor sit.</h1>
             <h2>Nam sed pulvinar orci.</h2>
             <h3>9999</h3>
             <div class="notes">
                 Presenter notes
             </div>
-        </div>
+        </header>
 
-        <div id="toc" class="step" data-rel-x="1500" data-rel-y="0" data-rotate="90">
+        <section id="toc" class="step" data-rel-x="1500" data-rel-y="0" data-rotate="90">
             <h1>Table of Contents</h1>
             <ul>
                 <li><a href="#step-1">A title slide</a></li>
@@ -46,8 +46,8 @@
                     positioned relative to the foregoing step. In other words, this is
                     equivalent to data-x="0" data-y="-1500".</p>
             </div>
-        </div>
-        <div class="step" data-rel-x="2000" data-rotate="360">
+        </section>
+        <section class="step" data-rel-x="2000" data-rotate="360">
             <h2>Lorem ipsum</h2>
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -62,21 +62,21 @@
                 Vivamus blandit magna quis lectus dapibus, id tincidunt arcu scelerisque.
                 Quisque ornare purus non ex eleifend, nec molestie nunc rhoncus.
             </p>
-        </div>
-        <div id="end" class="step title stop" data-rel-x="5000">
+        </section>
+        <footer id="end" class="step title stop" data-rel-x="5000">
             <span></span>
             <h1>Thanks</h1>
             <span></span>
             <div class="notes">presentation ends here</div>
-        </div>
+        </footer>
 
         <!-- This last, empty "slide" is set to be very large using the data-scale attribute, 
          so that it covers all the other slides you just saw. 
          It's a common way of zooming out at the end, to show the whole presentation.
          In CSS, we set pointer-events:none to make this slide non-clickable. 
          It makes a difference at least for SVG content, such as the mermaid diagram. -->
-        <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10" style="pointer-events: none;">
-        </div>
+        <aside id="overview" class="step" data-x="3000" data-y="1500" data-scale="10" style="pointer-events: none;">
+        </aside>
     </div>
 
     <!--
