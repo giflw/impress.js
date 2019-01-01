@@ -3237,6 +3237,12 @@
     // Wait for impress.js to be initialized
     document.addEventListener( "impress:init", function( event ) {
 
+        var root = event.target;
+
+        // Check if actual slide is overview
+        var inOverview = root.querySelector( ".active" ).id === "overview";
+        var lastStep = 0;
+
         // Getting API from event data.
         // So you don't event need to know what is the id of the root element
         // or anything. `impress:init` event data gives you everything you
@@ -3244,6 +3250,11 @@
         var api = event.detail.api;
         var gc = api.lib.gc;
         var util = api.lib.util;
+
+        // Pause autoplay if starts in overview
+        if ( inOverview ) {
+            util.triggerEvent( root, "impress:autoplay:pause" );
+        }
 
         // Supported keys are:
         // [space] - quite common in presentation software to move forward
@@ -3274,6 +3285,11 @@
             // With the sole exception of TAB, we also ignore keys pressed if shift is down.
             if ( event.shiftKey ) {
                 return false;
+            }
+
+            // Overview key is O
+            if ( event.keyCode === 79 ) {
+                return true;
             }
 
             if ( ( event.keyCode >= 32 && event.keyCode <= 34 ) ||
@@ -3314,6 +3330,17 @@
                         case 40: // Down
                                  api.next( event );
                                  break;
+                        case 79: // O (letter o)
+                                if ( inOverview ) {
+                                    util.triggerEvent( event.target, "impress:autoplay:resume" );
+                                    api.goto( lastStep );
+                                } else {
+                                    lastStep = root.querySelector( ".active" );
+                                    api.goto( "overview" );
+                                    util.triggerEvent( event.target, "impress:autoplay:pause" );
+                                }
+                                inOverview = !inOverview;
+                                break;
                     }
                 }
                 event.preventDefault();
@@ -3392,6 +3419,9 @@
         util.triggerEvent( document, "impress:help:add", { command: "Left &amp; Right",
                                                            text: "Previous &amp; Next step",
                                                            row: 1 } );
+        util.triggerEvent( document, "impress:help:add", { command: "O",
+                                                           text: "Overview",
+                                                           row: 2 } );
 
     }, false );
 
