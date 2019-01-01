@@ -111,7 +111,7 @@
         }, false );
 
         util.triggerEvent( document, "impress:help:add",
-            { command: "b or .", text: "Blackout", row: 100 }
+            { command: "B or .", text: "Blackout", row: 100 }
         );
 
     }, false );
