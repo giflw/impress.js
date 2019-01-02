@@ -3217,13 +3217,16 @@
 ( function( document ) {
     "use strict";
 
+    var overviewId = "impress-overview";
+
     // Wait for impress.js to be initialized
     document.addEventListener( "impress:init", function( event ) {
 
         var root = event.target;
 
+        var hasOverview = root.querySelector( "#" + overviewId )
         // Check if actual slide is overview
-        var inOverview = root.querySelector( ".active" ).id === "overview";
+        var inOverview = hasOverview && root.querySelector( ".active" ).id === overviewId;
         var lastStep = 0;
 
         // Getting API from event data.
@@ -3271,7 +3274,7 @@
             }
 
             // Overview key is O
-            if ( event.keyCode === 79 ) {
+            if ( hasOverview && event.keyCode === 79 ) {
                 return true;
             }
 
@@ -3314,15 +3317,17 @@
                                  api.next( event );
                                  break;
                         case 79: // O (letter o)
-                                if ( inOverview ) {
-                                    util.triggerEvent( event.target, "impress:autoplay:resume" );
-                                    api.goto( lastStep );
-                                } else {
-                                    lastStep = root.querySelector( ".active" );
-                                    api.goto( "overview" );
-                                    util.triggerEvent( event.target, "impress:autoplay:pause" );
+                                if ( hasOverview ) {
+                                    if ( inOverview ) {
+                                        util.triggerEvent( event.target, "impress:autoplay:resume" );
+                                        api.goto( lastStep );
+                                    } else {
+                                        lastStep = root.querySelector( ".active" );
+                                        api.goto( overviewId );
+                                        util.triggerEvent( event.target, "impress:autoplay:pause" );
+                                    }
+                                    inOverview = !inOverview;
                                 }
-                                inOverview = !inOverview;
                                 break;
                     }
                 }
