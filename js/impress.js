@@ -1692,7 +1692,9 @@
     }
 
     function exitFullscreen() {
-        document.exitFullscreen();
+        if ( document.fullscreenElement ) {
+            document.exitFullscreen();
+        }
     }
 
     // Wait for impress.js to be initialized
@@ -1717,9 +1719,8 @@
         }, false );
 
         gc.addEventListener( document, "keydown", function( event ) {
-
             // 27 (Escape) is sent by presentation remote controllers
-            if ( event.keyCode === 27 ) {
+            if ( event.key === "Escape" || event.key === "F5" ) {
                 event.preventDefault();
                 exitFullscreen();
                 util.triggerEvent( root.querySelector( ".active" ), "impress:steprefresh" );
