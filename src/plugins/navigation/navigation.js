@@ -215,9 +215,6 @@
         util.triggerEvent( document, "impress:help:add", { command: "Left &amp; Right",
                                                            text: "Previous &amp; Next step",
                                                            row: 1 } );
-        util.triggerEvent( document, "impress:help:add", { command: "O",
-                                                           text: "Overview",
-                                                           row: 2 } );
 
     }, false );
 
