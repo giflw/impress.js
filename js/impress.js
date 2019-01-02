@@ -1528,10 +1528,6 @@
             }
         }, false );
 
-        util.triggerEvent( document, "impress:help:add",
-            { command: "B or .", text: "Blackout", row: 100 }
-        );
-
     }, false );
 
     document.addEventListener( "impress:stepleave", function() {
