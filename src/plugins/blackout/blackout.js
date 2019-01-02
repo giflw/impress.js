@@ -88,6 +88,7 @@
         root = event.target;
         canvas = root.firstElementChild;
         var gc = api.lib.gc;
+        var util = api.lib.util;
 
         gc.addEventListener( document, "keydown", function( event ) {
 
@@ -109,6 +110,9 @@
                 event.preventDefault();
             }
         }, false );
+
+        util.triggerEvent( document, "impress:help:add",
+                            { command: "B or .", text: "Blackout", row: 100 } );
 
     }, false );
 

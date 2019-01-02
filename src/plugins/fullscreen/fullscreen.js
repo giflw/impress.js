@@ -51,6 +51,9 @@
             }
         }, false );
 
+        util.triggerEvent( document, "impress:help:add",
+            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 } );
+
     }, false );
 
 } )( document );

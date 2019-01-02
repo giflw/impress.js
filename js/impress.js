@@ -1506,6 +1506,7 @@
         root = event.target;
         canvas = root.firstElementChild;
         var gc = api.lib.gc;
+        var util = api.lib.util;
 
         gc.addEventListener( document, "keydown", function( event ) {
 
@@ -1527,6 +1528,9 @@
                 event.preventDefault();
             }
         }, false );
+
+        util.triggerEvent( document, "impress:help:add",
+                            { command: "B or .", text: "Blackout", row: 100 } );
 
     }, false );
 
@@ -1719,6 +1723,9 @@
                 util.triggerEvent( root.querySelector( ".active" ), "impress:steprefresh" );
             }
         }, false );
+
+        util.triggerEvent( document, "impress:help:add",
+            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 } );
 
     }, false );
 
@@ -1927,38 +1934,79 @@
     var rows = [];
     var timeoutHandle;
 
-    var triggerEvent = function( el, eventName, detail ) {
-        var event = document.createEvent( "CustomEvent" );
-        event.initCustomEvent( eventName, true, true, detail );
-        el.dispatchEvent( event );
+    var body = document.querySelector( "body" );
+
+    // This querySelector is used to keep compatibility with templates using div#impress-help
+    var helpDiv = document.querySelector( "#impress-help" ) || document.createElement( "div" );
+    helpDiv.id = "impress-help";
+    body.appendChild( helpDiv );
+
+    var fullHelpDiv = document.createElement( "div" );
+    fullHelpDiv.id = "impress-help-full";
+    var fullHelpStyle = {
+        display: "none",
+        position: "fixed",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: "#000",
+        color: "#FFF",
+        opacity: 0.8,
+        textAlign: "center",
+        padding: "3em"
     };
 
-    var renderHelpDiv = function() {
-        var helpDiv = document.getElementById( "impress-help" );
-        if ( helpDiv ) {
+    body.appendChild( fullHelpDiv );
+
+    var css = function( elem, style ) {
+        for ( var p in style ) {
+            elem.style[ p ] = style[ p ];
+        }
+    };
+    css( fullHelpDiv, fullHelpStyle );
+
+    var renderDiv = function( elem, shortOnly ) {
+        if ( elem ) {
             var html = [];
             for ( var row in rows ) {
                 for ( var arrayItem in row ) {
-                    html.push( rows[ row ][ arrayItem ] );
+                    var item = rows[ row ][ arrayItem ];
+                    if ( item ) {
+                        if ( ( shortOnly && item.short ) || !shortOnly ) {
+                            html.push( item.row );
+                        }
+                    }
                 }
             }
             if ( html ) {
-                helpDiv.innerHTML = "<table>\n" + html.join( "\n" ) + "</table>\n";
+                elem.innerHTML = "<table style='width: 100%'>\n" + html.join( "\n" ) + "</table>\n";
             }
         }
     };
 
-    var toggleHelp = function() {
-        var helpDiv = document.getElementById( "impress-help" );
-        if ( !helpDiv ) {
+    var renderHelpDiv = function() {
+        renderDiv( helpDiv, true );
+        renderDiv( fullHelpDiv, false );
+    };
+
+    var toggle = function( elem ) {
+        if ( !elem ) {
             return;
         }
 
-        if ( helpDiv.style.display === "block" ) {
-            helpDiv.style.display = "none";
+        if ( elem.style.display === "block" ) {
+            elem.style.display = "none";
         } else {
-            helpDiv.style.display = "block";
-            window.clearTimeout( timeoutHandle );
+            elem.style.display = "block";
+            if ( elem === helpDiv ) {
+                window.clearTimeout( timeoutHandle );
+            } else {
+
+                // Hides helpDiv when fullHelpDiv is shown
+                helpDiv.style.display = "none";
+                window.clearTimeout( timeoutHandle );
+            }
         }
     };
 
@@ -1966,7 +2014,10 @@
 
         if ( event.keyCode === 72 || event.keyCode === 191 ) { // "h" || "?"
             event.preventDefault();
-            toggleHelp();
+            toggle( helpDiv );
+        } else if ( event.key === "F1" ) {
+            event.preventDefault();
+            toggle( fullHelpDiv );
         }
     }, false );
 
@@ -1978,6 +2029,7 @@
      * :param: e.detail.command  Example: "H"
      * :param: e.detail.text     Example: "Show this help."
      * :param: e.detail.row      Row index from 0 to 9 where to place this help text. Example: 0
+     * :param: e.detail.short    If this help must appear in the short help. Example: true
      */
     document.addEventListener( "impress:help:add", function( e ) {
 
@@ -1986,39 +2038,44 @@
         // its own array. If there are more than one entry for the same index, they are shown in
         // first come, first serve ordering.
         var rowIndex = e.detail.row;
-        if ( typeof rows[ rowIndex ] !== "object" || !rows[ rowIndex ].isArray ) {
-            rows[ rowIndex ] = [];
-        }
-        rows[ e.detail.row ].push( "<tr><td><strong>" + e.detail.command + "</strong></td><td>" +
-                                   e.detail.text + "</td></tr>" );
+        var short = e.detail.short;
+        rows[ rowIndex ] = rows[ rowIndex ] || [];
+        rows[ e.detail.row ].push( {
+            row: "<tr><td><strong>" + e.detail.command + "</strong></td><td>" +
+                                   e.detail.text + "</td></tr>",
+            short: !!short
+        } );
         renderHelpDiv();
     } );
 
     document.addEventListener( "impress:init", function( e ) {
+        var api = e.detail.api;
+        var gc = api.lib.gc;
+        var util = api.lib.util;
+
         renderHelpDiv();
 
         // At start, show the help for 7 seconds.
-        var helpDiv = document.getElementById( "impress-help" );
         if ( helpDiv ) {
             helpDiv.style.display = "block";
             timeoutHandle = window.setTimeout( function() {
-                var helpDiv = document.getElementById( "impress-help" );
                 helpDiv.style.display = "none";
             }, 7000 );
 
             // Regster callback to empty the help div on teardown
-            var api = e.detail.api;
-            api.lib.gc.pushCallback( function() {
+            gc.pushCallback( function() {
                 window.clearTimeout( timeoutHandle );
-                helpDiv.style.display = "";
-                helpDiv.innerHTML = "";
+                helpDiv.remove();
+                fullHelpDiv.remove();
                 rows = [];
             } );
         }
 
         // Use our own API to register the help text for "h"
-        triggerEvent( document, "impress:help:add",
-                      { command: "H", text: "Show this help", row: 0 } );
+        util.triggerEvent( document, "impress:help:add",
+                      { command: "H", text: "Show/hide this help", row: 0, short: true } );
+        util.triggerEvent( document, "impress:help:add",
+                      { command: "F1", text: "Show/hide full help", row: 999, short: true } );
     } );
 
 } )( document, window );
@@ -3402,7 +3459,7 @@
         // Add a line to the help popup
         util.triggerEvent( document, "impress:help:add", { command: "Left &amp; Right",
                                                            text: "Previous &amp; Next step",
-                                                           row: 1 } );
+                                                           row: 1, short: true } );
 
     }, false );
 

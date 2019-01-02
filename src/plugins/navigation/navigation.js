@@ -216,7 +216,7 @@
         // Add a line to the help popup
         util.triggerEvent( document, "impress:help:add", { command: "Left &amp; Right",
                                                            text: "Previous &amp; Next step",
-                                                           row: 1 } );
+                                                           row: 1, short: true } );
 
     }, false );
 
