@@ -32,7 +32,8 @@
 
         var root = event.target;
 
-        var hasOverview = root.querySelector( "#" + overviewId )
+        var hasOverview = root.querySelector( "#" + overviewId );
+
         // Check if actual slide is overview
         var inOverview = hasOverview && root.querySelector( ".active" ).id === overviewId;
         var lastStep = 0;
@@ -125,17 +126,18 @@
                                  api.next( event );
                                  break;
                         case 79: // O (letter o)
-                                if ( hasOverview ) {
-                                    if ( inOverview ) {
-                                        util.triggerEvent( event.target, "impress:autoplay:resume" );
-                                        api.goto( lastStep );
-                                    } else {
-                                        lastStep = root.querySelector( ".active" );
-                                        api.goto( overviewId );
-                                        util.triggerEvent( event.target, "impress:autoplay:pause" );
-                                    }
-                                    inOverview = !inOverview;
+                                if ( !hasOverview ) {
+                                    break;
                                 }
+                                if ( inOverview ) {
+                                    util.triggerEvent( event.target, "impress:autoplay:resume" );
+                                    api.goto( lastStep );
+                                } else {
+                                    lastStep = root.querySelector( ".active" );
+                                    api.goto( overviewId );
+                                    util.triggerEvent( event.target, "impress:autoplay:pause" );
+                                }
+                                inOverview = !inOverview;
                                 break;
                     }
                 }

@@ -31,10 +31,6 @@
         var gc = api.lib.gc;
         var util = api.lib.util;
 
-        util.triggerEvent( document, "impress:help:add",
-            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 }
-        );
-
         gc.addEventListener( document, "keydown", function( event ) {
 
             // 116 (F5) is sent by presentation remote controllers
@@ -46,6 +42,7 @@
         }, false );
 
         gc.addEventListener( document, "keydown", function( event ) {
+
             // 27 (Escape) is sent by presentation remote controllers
             if ( event.key === "Escape" || event.key === "F5" ) {
                 event.preventDefault();

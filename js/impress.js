@@ -1704,10 +1704,6 @@
         var gc = api.lib.gc;
         var util = api.lib.util;
 
-        util.triggerEvent( document, "impress:help:add",
-            { command: "F5 / ESC", text: "Fullscreen: Enter / Exit", row: 200 }
-        );
-
         gc.addEventListener( document, "keydown", function( event ) {
 
             // 116 (F5) is sent by presentation remote controllers
@@ -1719,6 +1715,7 @@
         }, false );
 
         gc.addEventListener( document, "keydown", function( event ) {
+
             // 27 (Escape) is sent by presentation remote controllers
             if ( event.key === "Escape" || event.key === "F5" ) {
                 event.preventDefault();
@@ -3225,7 +3222,8 @@
 
         var root = event.target;
 
-        var hasOverview = root.querySelector( "#" + overviewId )
+        var hasOverview = root.querySelector( "#" + overviewId );
+
         // Check if actual slide is overview
         var inOverview = hasOverview && root.querySelector( ".active" ).id === overviewId;
         var lastStep = 0;
@@ -3318,17 +3316,18 @@
                                  api.next( event );
                                  break;
                         case 79: // O (letter o)
-                                if ( hasOverview ) {
-                                    if ( inOverview ) {
-                                        util.triggerEvent( event.target, "impress:autoplay:resume" );
-                                        api.goto( lastStep );
-                                    } else {
-                                        lastStep = root.querySelector( ".active" );
-                                        api.goto( overviewId );
-                                        util.triggerEvent( event.target, "impress:autoplay:pause" );
-                                    }
-                                    inOverview = !inOverview;
+                                if ( !hasOverview ) {
+                                    break;
                                 }
+                                if ( inOverview ) {
+                                    util.triggerEvent( event.target, "impress:autoplay:resume" );
+                                    api.goto( lastStep );
+                                } else {
+                                    lastStep = root.querySelector( ".active" );
+                                    api.goto( overviewId );
+                                    util.triggerEvent( event.target, "impress:autoplay:pause" );
+                                }
+                                inOverview = !inOverview;
                                 break;
                     }
                 }
