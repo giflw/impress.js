@@ -25,7 +25,7 @@ body {
 
     text-align: justify;
 
-    background: #222222;
+    background: #000000;
     color: #eeeeee;
 }
 
@@ -40,6 +40,10 @@ body {
     padding: 3em;
     margin: 0 auto;
     box-sizing: border-box;
+    background-color: #222222;
+}
+#overview {
+    background-color: transparent;
 }
 
 /* Make inactive steps a little bit transparent. */
